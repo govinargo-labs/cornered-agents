@@ -37,7 +37,14 @@ Stated plainly, because these are real:
   container or VM.
 - **Code you run yourself is not sandboxed.** When you execute the product the
   agents built (`python workspace/main.py`, `streamlit run ...`), it runs with
-  your full user rights. Read it first.
+  your full user rights. Read it first — or run it through
+  [`run_safely.py`](run_safely.py), which puts it in the same sandbox the
+  tests used:
+
+  ```bash
+  venv/bin/python run_safely.py workspace main.py
+  venv/bin/python run_safely.py projects/<id>/workspace main.py --sides 20
+  ```
 - **macOS Seatbelt leaks file names.** Contents in your home folder are
   blocked; names remain visible. Linux (bubblewrap) does not have this gap.
 - **The agents can still waste money.** A stuck retry loop costs API tokens.

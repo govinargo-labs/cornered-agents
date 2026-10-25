@@ -416,6 +416,13 @@ Developer's summary, test results, QA's verdict and feedback), the commits and
 the CEO's release review. At the end you **approve or refuse the release** with
 a button, read the code in the **Files** tab, and download it as a `.zip`.
 
+Before running what you downloaded: it is AI-written code, and it executes
+with your full user rights. Read it, or run it in the sandbox:
+
+```bash
+venv/bin/python run_safely.py projects/<id>/workspace main.py
+```
+
 How it works ([ui_runs.py](ui_runs.py)): the page never runs agents itself. It
 starts `company.py run` as a separate process with its own folder,
 `projects/<id>/` (workspace, `tasks.json`, logs), and reads that run's log to
@@ -555,6 +562,7 @@ tools.py              sandboxed tools + their descriptions for the model
 tests/                offline tests (fake model)
 docs/THREAT-MODEL.md  every defense, and what still gets through
 docs/case-studies/    four investigations, with logs and fixes
+run_safely.py         run agent-written code in the sandbox the tests used
 workspace/            the only folder agents can write to (git-ignored)
 projects/             one folder per web UI run (git-ignored)
 logs/                 agent run logs (git-ignored)
