@@ -605,6 +605,19 @@ logs/                 agent run logs (git-ignored)
 - A human approves before anything is published or pushed.
 - Never commit `.env` or API keys. `.env` is in `.gitignore`.
 
+## How this was built
+
+Developed with the assistance of AI, which the commit history reflects —
+every commit carries a `Co-Authored-By` trailer. The investigation, the
+decisions about which findings mattered and which were noise, what to fix and
+what to leave open, and the engineering judgement throughout are mine.
+
+Worth stating plainly in a repo whose argument is *verify the output, do not
+trust the report*. So verify this one: the tests run offline in about 18
+seconds with no API key, `redteam.py` reproduces the findings against a live
+model, and both outcome checks can be confirmed by planting the attack on disk
+yourself (see [the threat model](docs/THREAT-MODEL.md) § 5).
+
 ## Roadmap
 
 1. **[done]** Single Developer agent with tools
