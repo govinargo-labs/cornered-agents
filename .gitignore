@@ -1,0 +1,26 @@
+# Secrets: never commit these (this is a public repo)
+.env
+
+# Python
+venv/
+.venv/
+__pycache__/
+.pytest_cache/
+
+# Agent output and run logs
+workspace/
+logs/
+
+# Red-team scenario workspaces (throwaway: see redteam.py)
+redteam-runs/
+
+# Task board: runtime state of the current product
+tasks.json
+
+# Web UI: one folder per product run, and sign-in secrets
+projects/
+.streamlit/secrets.toml
+
+# Local editor/agent settings
+.claude/
+.agents/

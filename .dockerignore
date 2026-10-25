@@ -1,0 +1,16 @@
+# Never bake secrets into the image: pass them with --env-file at run time.
+.env
+.streamlit/secrets.toml
+
+# Local, generated or per-machine files
+venv/
+.venv/
+__pycache__/
+.pytest_cache/
+.git/
+.claude/
+.agents/
+workspace/
+projects/
+logs/
+tasks.json

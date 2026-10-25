@@ -1,0 +1,14 @@
+# Look and safety settings for the web UI (streamlit_app.py).
+[theme]
+primaryColor = "#4f46e5"
+
+[server]
+# Only this machine can open the UI. To let others in, read README "Host the UI" first.
+address = "localhost"
+
+[browser]
+gatherUsageStats = false
+
+[client]
+# No "Deploy" button or developer menu for visitors.
+toolbarMode = "minimal"

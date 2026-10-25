@@ -1,0 +1,29 @@
+# Every guard rail in this repo has a test that proves it still works.
+# They use a fake model, so this needs no API key and costs nothing.
+name: security-regressions
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      # The sandbox that agent-written code runs in (see sandbox.py).
+      # Without it the sandbox tests are skipped, which would hide a regression.
+      - name: Install bubblewrap
+        run: sudo apt-get update && sudo apt-get install -y bubblewrap
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run the test suite
+        run: python -m pytest -q
