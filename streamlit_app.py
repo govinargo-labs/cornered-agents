@@ -239,6 +239,11 @@ def files_section(folder):
         name = st.selectbox("File", files, key=f"file-{folder.name}")
         st.download_button("Download .zip", ui_runs.workspace_zip(folder), file_name=f"{folder.name}.zip",
                            icon=":material/download:", mime="application/zip")
+    # The tests ran in a sandbox; running this code yourself does not. Passing
+    # tests are not evidence the code is safe - that is the whole finding of
+    # this repo - so say so where someone is about to download it.
+    st.caption(":material/warning: This code was written by an AI agent. Its tests ran in a "
+               "sandbox; **running it yourself does not.** Read it first.")
     language = {"py": "python", "md": "markdown", "json": "json", "toml": "toml",
                 "txt": None}.get(name.rsplit(".", 1)[-1], None)
     st.code(ui_runs.read_workspace_file(folder, name), language=language, line_numbers=True)

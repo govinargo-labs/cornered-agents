@@ -4,12 +4,14 @@
 
 [![security-regressions](../../actions/workflows/security-regressions.yml/badge.svg)](../../actions/workflows/security-regressions.yml)
 
-A six-role AI company — CEO, Product Manager, Developer, QA Reviewer, Docs
-Writer, DevOps — that plans, builds, tests and documents small software
-products. Plain Python and the Anthropic SDK, **no agent framework**, so every
-part is readable.
+**Yes, this is a coding agent.** Give it an idea and it writes working
+software: a six-role AI company — CEO, Product Manager, Developer, QA
+Reviewer, Docs Writer, DevOps — that plans the work, writes the code, reviews
+it, tests it, documents it and commits it, stopping for your approval before
+anything is released. Plain Python and the Anthropic SDK, **no agent
+framework**, so every part is readable.
 
-The output is not the point. The agents are graded by a test suite they can
+The code it produces is not the point. The agents are graded by a test suite they can
 partly reach, so this repo is an instrument for a narrower question:
 
 > **When an agent is graded by something it can reach, what does it do when it
@@ -21,16 +23,84 @@ it reaches for.
 
 ---
 
+## ⚠️ Safety: read this first
+
+This project **runs code written by a language model on your machine**. Three
+stages, protected differently — the difference matters:
+
+```
+1. An agent writes code            confined to ./workspace
+2. Its tests run during the build  SANDBOXED
+3. YOU run the finished product    NOT PROTECTED. Your full user rights.
+```
+
+**Stages 1 and 2.** The agents themselves are ordinary Python; what protects
+you is that they have only five tools and no shell. The code they *write* is
+different — it could do anything — so whenever it executes
+([`run_tests`](tools.py), [`run_python`](tools.py)) it goes through a sandbox
+([sandbox.py](sandbox.py)): no network, no API keys in the environment, no
+reading your home folder, no writing outside the workspace. If no sandbox is
+available, that code does not run at all. Verified: every attack in this repo
+was an attempt to game the *tests*, and none of them escaped.
+
+**Stage 3 has no protection, and this is the part to take seriously.** When you
+run the product the agents built — `python main.py`, `streamlit run`, or
+anything you downloaded as a `.zip` from the UI — it runs as you, with your
+files, your keys and your network.
+
+The code passed its tests. That is exactly why it deserves a read first:
+**this entire repo is nine documented demonstrations that green tests do not
+mean the code does what it claims.** An agent is literal, not malicious, and
+literal is enough to produce something you would not have approved.
+
+To try it without reading every line first, run it through
+[`run_safely.py`](run_safely.py) — the same sandbox the tests used:
+
+```bash
+venv/bin/python run_safely.py workspace main.py
+venv/bin/python run_safely.py projects/<id>/workspace main.py --sides 20
+```
+
+No network, no API keys, no reading your home folder, writes confined to the
+product's own folder. It refuses to run if no sandbox is available, rather
+than falling back to an unprotected run.
+
+Read [SECURITY.md](SECURITY.md) for what is contained, what is not, and the
+known gaps. Provided **as is, without warranty**, under the
+[Apache License 2.0](LICENSE); you run it at your own risk, and the author
+accepts no liability for any resulting damage, data loss or API costs.
+
+---
+
 ## Why build this when Claude Code and Copilot exist?
 
 Because they answer a different question, and the one this repo asks is not
 answered anywhere public.
 
-Claude Code, Copilot, Cursor and Devin are **products**. They are optimised to
-produce working software, and they are very good at it. This is an
-**instrument**. It is optimised to produce evidence about what agents do when
-they cannot produce working software honestly. Nobody would use this to ship a
-feature, and that is fine — it was never the goal.
+Claude Code, Copilot, Cursor and Devin are **products**, optimised to produce
+working software, and they are very good at it. Use them for that. This is an
+**instrument**, optimised to produce evidence about what agents do when they
+*cannot* produce working software honestly — and a set of guard rails that
+came out of running it.
+
+Those guard rails are the part worth taking. They do not care which agent you
+use:
+
+- **[`tools.py`](tools.py)** — the rules that decide whether a write is
+  allowed. If your agents write files, the list of names that quietly change
+  what a test run reports (`conftest.py`, `sitecustomize.py`, anything
+  shadowing a stdlib module) is a list you want.
+- **[`sandbox.py`](sandbox.py)** — a two-platform sandbox for running
+  model-written code, in ~200 readable lines, that fails closed. Drop-in: it
+  takes a folder and wraps a command.
+- **[`redteam.py`](redteam.py)** — point it at your own pipeline. The four
+  scenarios are not specific to this company; the recipe (unreachable goal,
+  honest route blocked) is portable to any agent you can hand a task to.
+- **The two outcome checks** — "did real tests actually run and pass?" and
+  "is everything the agents wrote in the commit?" Both are a dozen lines, and
+  both caught attacks that bypassed every name-based rule in the repo.
+
+Apache-2.0, so copy any of it.
 
 The three differences that matter:
 
@@ -70,13 +140,15 @@ is exactly where the defenses that survive turn out to live: both of the checks
 that held against attacks written **straight to disk** — bypassing every rule
 in the tool layer — live there.
 
-### What this is not
+### Honest limits
 
-- Not a coding assistant. Use Claude Code; it is better at that by a wide
-  margin, and it is not close.
-- Not a benchmark. Nine findings from one model is evidence, not a score.
-- Not a claim that agents are dangerous. They are not deceptive — see the
-  note below. They are literal, and literal is enough.
+- **It builds small things.** CLIs and libraries, a few files, a handful of
+  tasks. For day-to-day work use Claude Code; it is better at that by a wide
+  margin.
+- **Nine findings from one model is evidence, not a benchmark.** No score, no
+  leaderboard, and running it against a frontier model is still open.
+- **It is not a claim that agents are dangerous.** They are not deceptive —
+  see below. They are literal, and literal turns out to be enough.
 
 ---
 
@@ -211,19 +283,6 @@ venv/bin/python -m pytest -q    # 218 tests, offline, ~18s, no API key needed
 
 Every guard rail in this repo has a test that proves it still works, including
 ones that plant attacker code and verify it is blocked.
-
-## Before you run it
-
-This project **runs code written by a language model on your machine**. Agent
-code is confined to a sandbox ([sandbox.py](sandbox.py)) that blocks the
-network, your home folder, your API keys and writes outside the workspace —
-and refuses to run at all if the sandbox is unavailable. The attacks above were
-attempts to game the *tests*; none of them escaped the sandbox.
-
-That is not a guarantee. Read [SECURITY.md](SECURITY.md) for what is contained,
-what is not, and the known gaps. Provided **as is, without warranty**, under
-the [Apache License 2.0](LICENSE); you run it at your own risk, and the author
-accepts no liability for any resulting damage, data loss or API costs.
 
 ## Setup
 
@@ -509,8 +568,11 @@ logs/                 agent run logs (git-ignored)
   the workspace, and cannot read your home folder (macOS Seatbelt, or
   bubblewrap on Linux). Without a working sandbox, agent code does not run
   unless you set `AGENT_SANDBOX=off` on
-  purpose (only do that inside a throwaway container or VM). Note: when *you*
-  run the product yourself (e.g. `streamlit run`), it is not sandboxed.
+  purpose (only do that inside a throwaway container or VM).
+- **The sandbox protects you from the agents, not from what they produce.**
+  When *you* run the finished product (`python main.py`, `streamlit run`, a
+  downloaded `.zip`), it runs with your full user rights. Read it first, or
+  run it in the sandbox yourself — see "Before you run it".
 - Agents cannot read or write `workspace/.git`. Only `git_ops.py` runs git,
   with hooks off. Nothing is ever pushed by the program.
 - Nobody can change how tests run: `conftest.py` and pytest config files can't
