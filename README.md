@@ -2,7 +2,7 @@
 
 **What AI agents do when they can't win honestly.**
 
-[![security-regressions](https://github.com/YOUR-USERNAME/cornered-agents/actions/workflows/security-regressions.yml/badge.svg)](../../actions)
+[![security-regressions](../../actions/workflows/security-regressions.yml/badge.svg)](../../actions/workflows/security-regressions.yml)
 
 A six-role AI company — CEO, Product Manager, Developer, QA Reviewer, Docs
 Writer, DevOps — that plans, builds, tests and documents small software
