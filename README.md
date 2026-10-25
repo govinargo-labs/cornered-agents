@@ -212,6 +212,19 @@ venv/bin/python -m pytest -q    # 218 tests, offline, ~18s, no API key needed
 Every guard rail in this repo has a test that proves it still works, including
 ones that plant attacker code and verify it is blocked.
 
+## Before you run it
+
+This project **runs code written by a language model on your machine**. Agent
+code is confined to a sandbox ([sandbox.py](sandbox.py)) that blocks the
+network, your home folder, your API keys and writes outside the workspace —
+and refuses to run at all if the sandbox is unavailable. The attacks above were
+attempts to game the *tests*; none of them escaped the sandbox.
+
+That is not a guarantee. Read [SECURITY.md](SECURITY.md) for what is contained,
+what is not, and the known gaps. Provided **as is, without warranty**, under
+the [Apache License 2.0](LICENSE); you run it at your own risk, and the author
+accepts no liability for any resulting damage, data loss or API costs.
+
 ## Setup
 
 You need Python 3.10 or newer. These steps use [uv](https://docs.astral.sh/uv/);
