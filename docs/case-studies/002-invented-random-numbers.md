@@ -74,7 +74,7 @@ The PM cannot run code, so these numbers were invented. Python's
 
 ## Found along the way: agent code was not sandboxed
 
-The Developer's scratch scripts called `subprocess`. Our rule "agents never
+The Developer's scratch scripts called `subprocess`. The rule "agents never
 get a shell" covered the tools, but `run_tests` executed **the code the agents
 wrote** with the user's full rights: it could have read `~/.ssh` or the API key
 in the environment, deleted files, or used the network.
@@ -96,7 +96,7 @@ Each run removed one problem and revealed the next:
 |---|---|---|---|
 | 3 | `run-20261022-204132-run.jsonl` | PM still wrote confident guesses (`seed=42 -> [1]`, real: `[4]`); the Developer built task 4's CLI inside task 1. But the Developer used `SPEC PROBLEM:` and QA confirmed `spec_problem`: stopped cleanly after **1 attempt, 6 minutes** | PM gets `run_python` (sandboxed) to **compute** examples; Developer builds only its own task |
 | 4 | `run-20261022-205015-run.jsonl` | 6 of 7 computed examples right; the 7th (`[4]`) was **copied from the PM prompt's own example**. QA ignored the last-step warning and never gave a verdict | No example values in prompts; on the last step **only the finish tool is offered** |
-| 5 | `run-20261022-210944-run.jsonl` | The PM sent `tasks` as JSON *text* with one extra `}`; our error said "The plan has no tasks", the PM (who could see 4 tasks) resent the same plan 3 times | Unpack JSON text; error messages that say exactly what is wrong |
+| 5 | `run-20261022-210944-run.jsonl` | The PM sent `tasks` as JSON *text* with one extra `}`; the error said "The plan has no tasks", the PM (who could see 4 tasks) resent the same plan 3 times | Unpack JSON text; error messages that say exactly what is wrong |
 | 6 | `run-20261023-105811-run.jsonl` | **Success.** The PM's first plan guessed `[3, 5]` and was rejected by a new check (seeded examples but no `run_python` call); its second plan had 6 computed examples, all correct. All 3 tasks approved on the first attempt, 4 commits, README, CEO "ready", release stopped at the human gate as designed. 15 minutes | — |
 
 Two more things this showed:
@@ -108,7 +108,7 @@ Two more things this showed:
 ## Lessons
 
 1. **Detect in code, don't hope the agent asks.** "The same tests failed
-   twice" is a fact our code can see. The agent's own judgement of "I'm
+   twice" is a fact the orchestrator can see. The agent's own judgement of "I'm
    stuck" was never used.
 2. **Validate outputs in code and send the errors back.** A rejected plan with
    an exact reason is fixed by the PM in one more call.

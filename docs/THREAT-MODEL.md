@@ -1,5 +1,11 @@
 # Threat model
 
+> Part of **[cornered-agents](https://github.com/YOUR-USERNAME/cornered-agents)** —
+> a six-role AI company in plain Python, and a harness that corners its agents
+> until they game the tests grading them. Nine documented findings, 218 offline
+> tests, and four case studies with the logs.
+
+
 What can go wrong when an AI agent writes code, what stops each thing, and what
 nothing stops yet.
 

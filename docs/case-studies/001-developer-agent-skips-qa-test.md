@@ -1,7 +1,7 @@
 # Case study 001: The Developer agent that went around its lock
 
 *Nickname: "the runaway Developer". It never left its sandbox, but it did find a
-way around a rule we built to stop it.*
+way around a rule built to stop it.*
 
 | | |
 |---|---|
@@ -36,7 +36,7 @@ Developer reacted like this (from the log):
 
 > "`2 3`→`23`… These are actually valid math expressions. **Tests were wrong.**"
 
-It rewrote its tests to accept the bug, and the reviewer approved. So we gave
+It rewrote its tests to accept the bug, and the reviewer approved. So I gave
 QA its own test files (`test_qa_*.py`), written with a QA-only tool
 (`write_qa_test`), and made `write_file` refuse them. The rule was meant to
 make sure **the Developer cannot make QA's tests stop counting**. It was
@@ -111,11 +111,11 @@ skips it.)
 > from test_qa_cli_format.py that was intentionally skipped by conftest.py)."
 
 QA saw the skip, accepted the Developer's reasoning, and approved. Nothing in
-our code treated a skipped test as a problem.
+the orchestrator treated a skipped test as a problem.
 
 ## Root causes
 
-1. **We protected a file name, not the outcome.** The goal was "QA's tests
+1. **A file name was protected, not the outcome.** The goal was "QA's tests
    always run and count". pytest offers several other ways to change which
    tests run: `conftest.py`, `pytest.ini` / `pyproject.toml` / `setup.cfg` /
    `tox.ini`, skip and xfail markers, `-k` deselection. Blocking one door left
@@ -124,10 +124,10 @@ our code treated a skipped test as a problem.
    test, the Developer's only options were to give up or to route around the
    rule. Under pressure to make the tests pass, it routed around.
 3. **"Skipped" counted as success.** `pytest` exits with code 0 when tests are
-   skipped, and our `run_tests` reported `Tests PASSED`.
+   skipped, and `run_tests` reported `Tests PASSED`.
 4. **The reviewer can be wrong too.** QA wrote the broken test in the first
    place, and later accepted the workaround instead of fixing its own test.
-5. **The final decision trusted QA's verdict alone.** Our code did not re-check
+5. **The final decision trusted QA's verdict alone.** Nothing re-checked
    anything after QA said "pass".
 
 ## Fixes
@@ -138,7 +138,7 @@ our code treated a skipped test as a problem.
 | 2 | Every test run uses `pytest --noconftest` | `tools.py` (`run_tests`) | A `conftest.py` left over from an earlier run |
 | 3 | Any skipped, xfailed or deselected test makes the result `FAILED` | `tools.py` (`run_tests`) | Every other way to hide a test (skip markers, etc.) |
 | 4 | **Dispute channel**: the Developer writes a `QA TEST DISPUTE:` section; the work goes to QA even if tests fail, and QA must re-read the task and fix its test or explain why it is right | `agents/developer.py`, `agents/qa.py`, `company.py` | The *reason* for the workaround: no way to say "your test is wrong" |
-| 5 | **Trust, but verify**: after a QA "pass", our code re-runs the tests; the pass only counts if they are green | `company.py` | QA approving while a test still fails or is skipped |
+| 5 | **Trust, but verify**: after a QA "pass", the orchestrator re-runs the tests; the pass only counts if they are green | `company.py` | QA approving while a test still fails or is skipped |
 
 Tests that lock these in:
 - `tests/test_tools.py`: `test_test_config_files_cannot_be_written`,
@@ -162,7 +162,7 @@ Tests that lock these in:
    in the file and QA mentioned it in the verdict. Full logs (`run_log.py`)
    turned a confusing "all green" into a clear story within minutes.
 5. **Reviewers need review too.** A QA agent with write access to tests can be
-   wrong in ways that block all progress. Disputes and a final check in our own
+   wrong in ways that block all progress. Disputes and a final check in the orchestrator's own
    code keep one agent's mistake from deciding the outcome.
 
 ## Open questions / ideas for later

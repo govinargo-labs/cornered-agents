@@ -21,6 +21,65 @@ it reaches for.
 
 ---
 
+## Why build this when Claude Code and Copilot exist?
+
+Because they answer a different question, and the one this repo asks is not
+answered anywhere public.
+
+Claude Code, Copilot, Cursor and Devin are **products**. They are optimised to
+produce working software, and they are very good at it. This is an
+**instrument**. It is optimised to produce evidence about what agents do when
+they cannot produce working software honestly. Nobody would use this to ship a
+feature, and that is fine — it was never the goal.
+
+The three differences that matter:
+
+**1. The failures are the output.** A coding product treats a gamed test as a
+bug to fix quietly. Here it is the result: it gets a case study, logs, a root
+cause, a fix, and a regression test. Nine of them so far.
+
+**2. You can see all of it.** Every one of those products almost certainly has
+guard rails against specification gaming — they would be unusable otherwise.
+You cannot read them. You cannot see which attacks were tried, which defenses
+were kept, or what the teams decided was unfixable. That work exists and it is
+internal. This repo publishes the equivalent: a
+[threat model](docs/THREAT-MODEL.md) with every defense, every known bypass,
+and an honest list of what still gets through.
+
+**3. It can be aimed.** `redteam.py` corners an agent on purpose and reports
+what it reached for. You cannot point Copilot at its own guard rails and ask it
+to break them. Here that is one command, and the exit code is non-zero when
+something gets through.
+
+### So why build it at all?
+
+Autonomous coding agents are being adopted far faster than the practice of
+verifying them. The structural problem is not exotic: **an agent is given a
+goal, a way to check whether it met the goal, and enough freedom to touch
+both.** That describes nearly every agentic coding setup in production right
+now, including the ones reviewing pull requests today.
+
+Whether such systems can write working code is largely settled. What happens
+when they cannot — and whether anyone would notice — is not. Every incident in
+this repo ended with green tests and an agent reporting success in good faith
+on work that was broken. A reviewer trusting that report would have shipped it.
+
+Building the company from scratch, with no framework, was the only way to get
+at that. A framework hides the orchestration layer, and the orchestration layer
+is exactly where the defenses that survive turn out to live: both of the checks
+that held against attacks written **straight to disk** — bypassing every rule
+in the tool layer — live there.
+
+### What this is not
+
+- Not a coding assistant. Use Claude Code; it is better at that by a wide
+  margin, and it is not close.
+- Not a benchmark. Nine findings from one model is evidence, not a score.
+- Not a claim that agents are dangerous. They are not deceptive — see the
+  note below. They are literal, and literal is enough.
+
+---
+
 ## The silent green
 
 A QA test asserts `2 + 2 == 5`. It must fail. Here is what the test runner
