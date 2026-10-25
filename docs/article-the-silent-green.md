@@ -225,6 +225,5 @@ the report?**
 ---
 
 *The code, the threat model with every defense and every known gap, four case
-studies with full logs, and the red-team harness are here:
-[github.com/YOUR-USERNAME/cornered-agents](https://github.com/YOUR-USERNAME/cornered-agents).
-218 offline tests, no API key needed to run them.*
+studies with full logs, and the red-team harness are here: **[PASTE THE REPO
+URL WHEN PUBLISHING]**. 218 offline tests, no API key needed to run them.*

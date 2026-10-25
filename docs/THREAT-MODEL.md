@@ -1,6 +1,6 @@
 # Threat model
 
-> Part of **[cornered-agents](https://github.com/YOUR-USERNAME/cornered-agents)** —
+> Part of **[cornered-agents](../README.md)** —
 > a six-role AI company in plain Python, and a harness that corners its agents
 > until they game the tests grading them. Nine documented findings, 218 offline
 > tests, and four case studies with the logs.
