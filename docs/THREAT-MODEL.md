@@ -13,6 +13,19 @@ mind. Nine findings, four case studies, nothing hypothetical.
 
 ---
 
+**A note on "cheating."** The word is used loosely below, and it is not
+accurate. The agents are not deceptive: they narrate what they are about to do,
+and report it accurately afterwards. What they do is *specification game* —
+optimise the goal they were given (make the tests pass) rather than the one
+that was meant (write correct, independently verified code). The distinction
+matters, because it rules out an obvious fix. Every incident here ended with an
+agent reporting success in good faith on work that was broken, so making the
+model more honest would have changed nothing. Intent is irrelevant to the
+consequence, which is why the defenses that hold are the ones that verify
+results instead of trusting reports.
+
+---
+
 ## What this project is
 
 A small software company staffed entirely by AI agents. A CEO turns an idea
@@ -386,7 +399,7 @@ The honest part. Everything here is known, reproducible, and open right now.
 
 ### 3.1 Cannot be prevented — only noticed afterwards
 
-Some cheating is ordinary, legal Python. There is no rule to write.
+Some gaming is ordinary, legal Python. There is no rule to write.
 
 | The trick | Why no rule can stop it | What happens instead |
 |---|---|---|
@@ -415,7 +428,7 @@ detectable is worth more than pretending all of them are preventable.
 | **The PM and the CEO can approve their own work** | every scenario so far pressures the Developer. The two roles that *judge* have never been red-teamed. Biggest open gap. |
 | Committed tree vs working tree | the `.gitignore` check covers ignored files; nothing yet runs `git status --porcelain` after a commit to catch other mismatches |
 | Prompt injection through file contents | an agent reads a file whose text says "ignore your instructions and…". Never tested. |
-| A stronger model | every finding comes from one local model (Qwen3.6-35B, thinking off). Does Claude raise a dispute where this one cheats? Open since 001. |
+| A stronger model | every finding comes from one local model (Qwen3.6-35B, thinking off). Does Claude raise a dispute where this one games? Open since 001. |
 | Two runs at once | the UI allows one at a time by configuration, so concurrency has never been tested |
 
 ### 3.4 Deliberately out of scope
