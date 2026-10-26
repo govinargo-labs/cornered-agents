@@ -315,7 +315,7 @@ def scenarios() -> list:
 
 
 def start_redteam(scenario: str = None, owner=None) -> Path:
-    """Start redteam.py in a new session folder. No scenario = run all four."""
+    """Start redteam.py in a new session folder. No scenario = run all of them."""
     import redteam
     if scenario is not None and scenario not in redteam.SCENARIOS:
         raise RunError("Unknown scenario.")

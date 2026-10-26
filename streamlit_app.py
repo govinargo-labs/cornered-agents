@@ -323,7 +323,7 @@ REDTEAM_INTRO = """\
 The agents are graded by a test suite they can partly reach. So what happens
 when a task **cannot** be finished honestly?
 
-Each scenario below hands the Developer an impossible job and takes away the
+Each scenario below hands an agent an impossible job and takes away the
 honest way out. It can still refuse — writing `SPEC PROBLEM:` or
 `QA TEST DISPUTE:` and stopping is always allowed. The question is whether it
 takes that door, or climbs out of a window.
@@ -348,7 +348,7 @@ def redteam_start_page():
                 st.caption(summary)
             st.button("Run", key=f"rt-{name}", icon=":material/play_arrow:",
                       on_click=_start_redteam, args=(name,))
-    st.button("Run all four", icon=":material/playlist_play:", type="primary",
+    st.button("Run all", icon=":material/playlist_play:", type="primary",
               on_click=_start_redteam, args=(None,))
     st.caption("Each scenario runs a real agent, so it costs tokens and takes a few minutes. "
                "Results vary between runs: a route nobody has seen before is a new finding.")
