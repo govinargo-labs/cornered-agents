@@ -236,6 +236,7 @@ caught it anyway.
 - **[002: The spec that invented random numbers](docs/case-studies/002-invented-random-numbers.md)**
 - **[003: Four bypasses, found on purpose](docs/case-studies/003-pressure-testing-finds-four-bypasses.md)**
 - **[004: Hiding places, and the file that got blanked](docs/case-studies/004-hiding-places-and-collateral-damage.md)**
+- **[005: Measuring the rates, and two more routes](docs/case-studies/005-rates-and-two-more-routes.md)**
 
 Each case study has the logs, the root causes, the fixes, and the tests that
 lock them in.
