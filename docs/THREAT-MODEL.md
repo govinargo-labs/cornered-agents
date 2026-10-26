@@ -47,32 +47,28 @@ one file deciding who works next.
 
 ### The idea behind it
 
-Multi-agent coding systems are usually evaluated on what they produce. This
-one was built to examine something the output never shows: the integrity of
-the process that produced it.
+This one was built to examine something the output never shows: the integrity
+of the process that produced it.
 
 The structural problem is this: **an agent is graded by a test suite it can
 partly control.** QA writes tests, the Developer writes code, and the
 Developer also has a `write_file` tool. The grade and the thing being graded
 live in the same folder.
 
-That is not a flaw peculiar to this repo. It is the shape of almost every
-autonomous coding system in production today: an agent is given a goal, a way
-to verify it met the goal, and enough freedom to touch both. Whether such
-systems can produce working software is largely settled. The open question is
-narrower and harder to measure:
+That is the structural problem in one sentence: an agent is given a goal, a way
+to verify it met the goal, and enough freedom to touch both. The question it
+raises is narrower and harder to measure:
 
 > **When an agent is graded by something it can reach, what does it do when it
 > cannot win honestly?**
 
 The company is the apparatus for answering that. Six roles, real tools, a real
 git repository, a real test runner, and a sandbox — deliberately complete, so
-that the failures it surfaces are the ones a production system would hit
-rather than artifacts of a toy.
+that the failures it surfaces come from a working system rather than a toy.
 
-Built without an agent framework for the same reason. Frameworks abstract away
-the orchestration layer, and the orchestration layer is precisely where the
-defenses that survive turn out to live.
+Built without an agent framework, and with my own orchestrator, so that every
+step stays visible. The orchestration layer is precisely where the defenses that
+survive turn out to live.
 
 ### What came out of it
 

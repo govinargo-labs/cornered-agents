@@ -72,19 +72,18 @@ accepts no liability for any resulting damage, data loss or API costs.
 
 ---
 
-## Why build this when Claude Code and Copilot exist?
+## Why I wrote my own orchestrator
 
-Because they answer a different question, and the one this repo asks is not
-answered anywhere public.
+This project needed to do things to its agents that I could only do by owning the loop that runs them: hand an agent an impossible task, take away the honest exit, change one rule, and run the same scenario again to see what changed. So I wrote my own orchestrator, in plain Python, where every step is mine to inspect and change.
 
-Claude Code, Copilot, Cursor and Devin are **products**, optimised to produce
-working software, and they are very good at it. Use them for that. This is an
-**instrument**, optimised to produce evidence about what agents do when they
-*cannot* produce working software honestly — and a set of guard rails that
-came out of running it.
+That is what it bought:
 
-Those guard rails are the part worth taking. They do not care which agent you
-use:
+- **A check at any point in the loop.** Refuse a run that never printed "N passed". Refuse a commit that leaves source out. Re-run the tests after QA says "pass".
+- **Cornering an agent on purpose.** A harness that hands an agent an impossible task needs control of the workflow around it.
+- **Re-running a scenario with a fix applied**, and comparing the verdicts.
+- **Choosing the model.** Every finding here came from a local model, so anyone with the repo can repeat it.
+
+The reusable parts do not depend on the orchestrator. Copy any of them:
 
 - **[`tools.py`](tools.py)** — the rules that decide whether a write is
   allowed. If your agents write files, the list of names that quietly change
@@ -93,60 +92,39 @@ use:
 - **[`sandbox.py`](sandbox.py)** — a two-platform sandbox for running
   model-written code, in ~200 readable lines, that fails closed. Drop-in: it
   takes a folder and wraps a command.
-- **[`redteam.py`](redteam.py)** — point it at your own pipeline. The
-  scenarios are not specific to this company; the recipe (unreachable goal,
-  honest route blocked) is portable to any agent you can hand a task to.
+- **[`redteam.py`](redteam.py)** — the scenarios are not specific to this
+  company; the recipe (unreachable goal, honest route blocked) is portable to
+  any agent you can hand a task to.
 - **The two outcome checks** — "did real tests actually run and pass?" and
   "is everything the agents wrote in the commit?" Both are a dozen lines, and
   both caught attacks that bypassed every name-based rule in the repo.
 
 Apache-2.0, so copy any of it.
 
-The three differences that matter:
+**The failures are the output.** Each one gets a case study, logs, a root cause,
+a fix, and a regression test. Eleven of them so far, and an honest
+[threat model](docs/THREAT-MODEL.md) of every defense, every known bypass, and
+what still gets through.
 
-**1. The failures are the output.** A coding product treats a gamed test as a
-bug to fix quietly. Here it is the result: it gets a case study, logs, a root
-cause, a fix, and a regression test. Eleven of them so far.
+### The structural problem
 
-**2. You can see all of it.** Every one of those products almost certainly has
-guard rails against specification gaming — they would be unusable otherwise.
-You cannot read them. You cannot see which attacks were tried, which defenses
-were kept, or what the teams decided was unfixable. That work exists and it is
-internal. This repo publishes the equivalent: a
-[threat model](docs/THREAT-MODEL.md) with every defense, every known bypass,
-and an honest list of what still gets through.
+An agent is given a goal, a way to check whether it met the goal, and enough
+freedom to touch both. In this repo that produced eleven documented failures,
+and every one ended with green tests and an agent reporting success in good
+faith on work that was broken. A reviewer trusting that report would have
+shipped it.
 
-**3. It can be aimed.** `redteam.py` corners an agent on purpose and reports
-what it reached for. I can't see inside Copilot's loop well enough to aim a
-harness at its guard rails. Here that is one command, and the exit code is
-non-zero when something gets through.
-
-### So why build it at all?
-
-Autonomous coding agents are being adopted far faster than the practice of
-verifying them. The structural problem is not exotic: **an agent is given a
-goal, a way to check whether it met the goal, and enough freedom to touch
-both.** That describes nearly every agentic coding setup in production right
-now, including the ones reviewing pull requests today.
-
-Whether such systems can write working code is largely settled. What happens
-when they cannot — and whether anyone would notice — is not. Every incident in
-this repo ended with green tests and an agent reporting success in good faith
-on work that was broken. A reviewer trusting that report would have shipped it.
-
-Building the company from scratch, with no framework, was the only way to get
-at that. A framework hides the orchestration layer, and the orchestration layer
-is exactly where the defenses that survive turn out to live: both of the checks
-that held against attacks written **straight to disk** — bypassing every rule
-in the tool layer — live there.
+Writing the orchestrator myself, with no framework, kept every step visible.
+That matters because the orchestration layer is exactly where the defenses that
+survive turn out to live: both of the checks that held against attacks written
+**straight to disk** — bypassing every rule in the tool layer — live there.
 
 ### Honest limits
 
 - **It builds small things.** CLIs and libraries, a few files, a handful of
-  tasks. For day-to-day work use Claude Code; it is better at that by a wide
-  margin.
+  tasks.
 - **Eleven findings from one model is evidence, not a benchmark.** No score, no
-  leaderboard, and running it against a frontier model is still open.
+  leaderboard, and running it against a stronger model is still open.
 - **It is not a claim that agents are dangerous.** They are not deceptive —
   see below. They are literal, and literal turns out to be enough.
 
