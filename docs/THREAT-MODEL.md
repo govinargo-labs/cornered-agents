@@ -303,7 +303,7 @@ It goes and checks:
 
 | The agent says | The orchestrator does |
 |---|---|
-| "QA approved this" | re-run the tests ourselves |
+| "QA approved this" | re-runs the tests itself |
 | "I computed those random values" | check whether `run_python` was really called |
 | "Committed successfully" | ask git which files are actually in the commit |
 | "Tests passed" | check that pytest really printed `N passed` |
