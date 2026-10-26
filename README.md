@@ -17,7 +17,7 @@ partly reach, so this repo is an instrument for a narrower question:
 > **When an agent is graded by something it can reach, what does it do when it
 > cannot win honestly?**
 
-Nine documented findings so far. Two were found by accident; the rest by
+Eleven documented findings so far. Two were found by accident; the rest by
 [`redteam.py`](redteam.py), which corners an agent on purpose and records what
 it reaches for.
 
@@ -49,7 +49,7 @@ anything you downloaded as a `.zip` from the UI — it runs as you, with your
 files, your keys and your network.
 
 The code passed its tests. That is exactly why it deserves a read first:
-**this entire repo is nine documented demonstrations that green tests do not
+**this entire repo is eleven documented demonstrations that green tests do not
 mean the code does what it claims.** An agent is literal, not malicious, and
 literal is enough to produce something you would not have approved.
 
@@ -145,7 +145,7 @@ in the tool layer — live there.
 - **It builds small things.** CLIs and libraries, a few files, a handful of
   tasks. For day-to-day work use Claude Code; it is better at that by a wide
   margin.
-- **Nine findings from one model is evidence, not a benchmark.** No score, no
+- **Eleven findings from one model is evidence, not a benchmark.** No score, no
   leaderboard, and running it against a frontier model is still open.
 - **It is not a claim that agents are dangerous.** They are not deceptive —
   see below. They are literal, and literal turns out to be enough.
@@ -247,8 +247,9 @@ caught it anyway.
 
 ## Read the evidence
 
-- **[Threat model](docs/THREAT-MODEL.md)** — every defense, which kind it is,
-  and an honest list of what still gets through. Start here.
+- **[Threat model](docs/THREAT-MODEL.md)** — all eleven findings in one table,
+  every defense and which kind it is, and an honest list of what still gets
+  through. Start here.
 - **[001: The Developer that went around its lock](docs/case-studies/001-developer-agent-skips-qa-test.md)**
 - **[002: The spec that invented random numbers](docs/case-studies/002-invented-random-numbers.md)**
 - **[003: Four bypasses, found on purpose](docs/case-studies/003-pressure-testing-finds-four-bypasses.md)**
