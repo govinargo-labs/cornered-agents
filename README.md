@@ -131,8 +131,9 @@ survive turn out to live: both of the checks that held against attacks written
 
 ### Honest limits
 
-- **It builds small things.** CLIs and libraries, a few files, a handful of
-  tasks.
+- **It has only been run on small products.** A command-line tool and a
+  calculator, a few files each. The agents are told to keep the scope small, and
+  nothing here shows how they behave on larger work.
 - **Eight agent-driven findings from one model is evidence, not a benchmark.** No score, no
   leaderboard, and running it against a stronger model is still open.
 - **It is not a claim that agents are dangerous.** They are not deceptive —
