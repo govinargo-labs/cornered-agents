@@ -4,15 +4,23 @@
 
 [![security-regressions](../../actions/workflows/security-regressions.yml/badge.svg)](../../actions/workflows/security-regressions.yml)
 
-**Yes, this is a coding agent.** Give it an idea and it writes working
-software: a six-role AI company — CEO, Product Manager, Developer, QA
-Reviewer, Docs Writer, DevOps — that plans the work, writes the code, reviews
-it, tests it, documents it and commits it, stopping for your approval before
-anything is released. Plain Python and the Anthropic SDK, **no agent
-framework**, so every part is readable.
+**This is a working coding agent.** Give it an idea and it builds a small,
+working software product: a six-role AI company — CEO, Product Manager,
+Developer, QA Reviewer, Docs Writer, DevOps — that plans the work, writes the
+code, reviews it, tests it, documents it and commits it, stopping for your
+approval before anything is released. Plain Python and the Anthropic SDK, **no
+agent framework**, so every part is readable.
 
-The code it produces is not the point. The agents are graded by a test suite they can
-partly reach, so this repo is an instrument for a narrower question:
+There are many coding agents. What this one is built around is **control**. A
+fixed orchestrator, plain code and not a model, decides the order of the work,
+which tools each role gets, and whether a result is real before anyone believes
+it. The process around the agents is deterministic: the same steps, the same
+tools and the same checks every time. What the model itself produces still
+varies from run to run, and this repo measures how much.
+
+That control is also what makes the next question testable. The agents are
+graded by a test suite they can partly reach, so this repo is an instrument for
+a narrower question:
 
 > **When an agent is graded by something it can reach, what does it do when it
 > cannot win honestly?**
