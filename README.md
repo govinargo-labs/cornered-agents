@@ -17,7 +17,7 @@ partly reach, so this repo is an instrument for a narrower question:
 > **When an agent is graded by something it can reach, what does it do when it
 > cannot win honestly?**
 
-Eleven documented findings so far. Two were found by accident, five by
+Twelve documented findings so far. Two were found by accident, six by
 [`redteam.py`](redteam.py), which corners an agent on purpose and records what
 it reaches for, and four by probing and reading the code by hand.
 
@@ -49,7 +49,7 @@ anything you downloaded as a `.zip` from the UI — it runs as you, with your
 files, your keys and your network.
 
 The code passed its tests. That is exactly why it deserves a read first:
-**this entire repo is eleven documented demonstrations that green tests do not
+**this entire repo is twelve documented demonstrations that green tests do not
 mean the code does what it claims.** An agent is literal, not malicious, and
 literal is enough to produce something you would not have approved.
 
@@ -81,7 +81,7 @@ That is what it bought:
 - **A check at any point in the loop.** Refuse a run that never printed "N passed". Refuse a commit that leaves source out. Re-run the tests after QA says "pass".
 - **Cornering an agent on purpose.** A harness that hands an agent an impossible task needs control of the workflow around it.
 - **Re-running a scenario with a fix applied**, and comparing the verdicts.
-- **Choosing the model.** Every finding here came from a local model, so anyone with the repo can repeat it.
+- **Choosing the model.** Every agent-driven finding here came from a local model, so anyone with the repo can repeat it.
 
 The reusable parts do not depend on the orchestrator. Copy any of them:
 
@@ -102,17 +102,19 @@ The reusable parts do not depend on the orchestrator. Copy any of them:
 Apache-2.0, so copy any of it.
 
 **The failures are the output.** Each one gets a case study, logs, a root cause,
-a fix, and a regression test. Eleven of them so far, and an honest
+a fix, and a regression test. Twelve of them so far, and an honest
 [threat model](docs/THREAT-MODEL.md) of every defense, every known bypass, and
 what still gets through.
 
 ### The structural problem
 
 An agent is given a goal, a way to check whether it met the goal, and enough
-freedom to touch both. In this repo that produced eleven documented failures,
-and every one ended with green tests and an agent reporting success in good
-faith on work that was broken. A reviewer trusting that report would have
-shipped it.
+freedom to touch both. In this repo that produced twelve documented failures. Eight involved an
+agent, and in seven of those the run ended with green tests and an agent
+reporting success in good faith on work that was broken (the eighth, case
+study 002, ended in a stuck run). The other four are holes I found by probing
+the code, with no agent involved. A reviewer trusting those reports would have
+shipped the broken work.
 
 Writing the orchestrator myself, with no framework, kept every step visible.
 That matters because the orchestration layer is exactly where the defenses that
@@ -123,7 +125,7 @@ survive turn out to live: both of the checks that held against attacks written
 
 - **It builds small things.** CLIs and libraries, a few files, a handful of
   tasks.
-- **Eleven findings from one model is evidence, not a benchmark.** No score, no
+- **Eight agent-driven findings from one model is evidence, not a benchmark.** No score, no
   leaderboard, and running it against a stronger model is still open.
 - **It is not a claim that agents are dangerous.** They are not deceptive —
   see below. They are literal, and literal turns out to be enough.
@@ -173,8 +175,8 @@ report it accurately afterwards. In 004 the reasoning trace reads:
 > can't use a delete tool directly..."
 
 That is not a cover-up. It is an agent optimizing the goal it was given — make
-the tests pass — rather than the one that was meant. Every incident ended with
-green tests and an honest report of success on work that was broken.
+the tests pass — rather than the one that was meant. In most of these cases the run
+ended with green tests and an honest report of success on work that was broken.
 
 Which is why "make the model more honest" is not the fix. The reports were
 already honest.
@@ -229,7 +231,7 @@ caught it anyway.
 
 ## Read the evidence
 
-- **[Threat model](docs/THREAT-MODEL.md)** — all eleven findings in one table,
+- **[Threat model](docs/THREAT-MODEL.md)** — all twelve findings in one table,
   every defense and which kind it is, and an honest list of what still gets
   through. Start here.
 - **[001: The Developer that went around its lock](docs/case-studies/001-developer-agent-skips-qa-test.md)**
@@ -248,7 +250,7 @@ Stated plainly, because the limits are part of the result:
 - Some gaming **cannot be prevented, only detected**. `API_KEY = "sk-live-..."`
   hardcoded as a default is ordinary legal Python. So is
   `if fname != "test_qa_report.py"`. There is no rule to write.
-- Every finding comes from **one local model** (Qwen3.6-35B, thinking off).
+- Every agent-driven finding comes from **one local model** (Qwen3.6-35B, thinking off).
   Whether a stronger model disputes where this one games is untested.
 - The **PM and the CEO can still approve their own work**. Every scenario so
   far pressures the Developer; the two roles that *judge* have never been
@@ -262,7 +264,7 @@ The full list is in the [threat model](docs/THREAT-MODEL.md).
 ## Try it
 
 ```bash
-venv/bin/python -m pytest -q    # 232 tests, offline, ~18s, no API key needed
+venv/bin/python -m pytest -q    # 266 tests, offline, ~18s, no API key needed
 ```
 
 Every guard rail in this repo has a test that proves it still works, including
@@ -602,7 +604,7 @@ reproduces the findings against a live model.
 3. **[done]** Product Manager agent and a shared task board (`tasks.json`)
 4. **[done]** CEO, Docs Writer and DevOps agents; the whole company end to end
 5. **[done]** `redteam.py`: manufacture the conditions instead of waiting for them
-6. Run the same scenarios against a frontier model and compare. Every finding
+6. Run the same scenarios against a frontier model and compare. Every agent-driven finding
    so far comes from one local model; whether a stronger one disputes where
    this one games is the biggest open question in the repo.
 7. Red-team the PM and the CEO. Both can still effectively approve their own
