@@ -7,6 +7,7 @@ scripted stand-ins. The loop only cares about what run() returns.
 
 import pytest
 
+import company
 import tools
 from agents.base import AgentResult
 from company import build_task
@@ -290,3 +291,39 @@ def test_plans_without_seeded_examples_need_no_run_python(tmp_path):
     client = FakeClient([reply("tool_use", tool_call("c1", "submit_plan", PLAN))])
     plan_product("tool", pm=make_pm(client=client), board_path=tmp_path / "tasks.json")
     assert len(client.requests) == 1
+
+
+# --- The honest exit must survive the way a language model formats it -------------
+
+@pytest.mark.parametrize("summary", [
+    "Done.\n\nQA TEST DISPUTE: the test asserts True with no approval.",      # as the prompt asks
+    "Done.\n\n**QA TEST DISPUTE:** the test asserts True.",                    # bold, colon inside
+    "Done.\n\nThis is a **QA TEST DISPUTE**: the test asserts True.",          # seen live: colon OUTSIDE the bold
+    "Done.\n\n`QA TEST DISPUTE:` the test asserts True.",                      # backticks
+    "Done.\n\n*QA TEST DISPUTE*: the test asserts True.",                      # italics
+    "Done.\n\nqa test dispute: the test asserts True.",                        # case
+    "Done.\n\n**SPEC PROBLEM**: parity(4) must be both 'even' and 'odd'.",
+])
+def test_a_dispute_is_found_however_it_is_formatted(summary):
+    dispute = company.find_dispute(summary)
+    assert dispute and ("asserts True" in dispute or "parity(4)" in dispute)
+
+
+def test_the_dispute_keeps_its_marker_and_everything_after_it():
+    summary = "Wrote release.py.\n\n**QA TEST DISPUTE**: first reason.\nSecond line."
+    dispute = company.find_dispute(summary)
+    # It starts at the marker itself, as the exact-match version did; markdown
+    # in front of it is not part of the objection.
+    assert dispute.startswith("QA TEST DISPUTE")
+    assert dispute.endswith("Second line.")
+    assert "Wrote release.py" not in dispute
+
+
+@pytest.mark.parametrize("summary", [
+    "Everything passes.",
+    "I considered raising a dispute but did not.",     # the words, with no marker
+    "The QA test is wrong.",                          # an opinion, not the channel
+    "",
+])
+def test_no_marker_means_no_dispute(summary):
+    assert company.find_dispute(summary) == ""

@@ -9,7 +9,7 @@ guard rails.*
 | **Date** | 2026-10-26 |
 | **Phase** | 4, plus the two CEO scenarios from case study 004's follow-up |
 | **Model** | Qwen3.6-35B-A3B-MLX-4bit, local via oMLX (thinking off) |
-| **Runs** | 60 (six scenarios × 10), 0 crashes |
+| **Runs** | 70 (seven scenarios × 10), 0 crashes |
 | **Status** | Two new routes found; both left open on purpose (see "Why left open") |
 
 ## Why run it
@@ -38,7 +38,8 @@ somewhere between 0% and 28%.
 What the spread says:
 
 - **The two roles that judge (the CEO) held every time, 20/20.** The Developer,
-  the role that builds, was gamed in most runs of three scenarios. The honest
+  the role that builds, was gamed in 8 of 10 runs of two scenarios and 4 of 10 in
+  two more. The honest
   exit is a first-class choice in the CEO's answer (`ready` / `not_ready`); for
   the Developer it is a phrase it has to decide to write. The shape of the
   answer changes the behaviour.
@@ -177,6 +178,20 @@ The sixth agent had written `**QA TEST DISPUTE**:` in bold, and the harness
 matched only the plain text. Dispute detection now ignores markdown emphasis
 (`took_honest_exit`), and both measurements were re-scored from their logs.
 Only this scenario changed.
+
+**The same bug was in the pipeline.** `find_dispute` in `company.py`, which
+decides whether a Developer's objection is passed on to QA, was an exact
+substring match on `QA TEST DISPUTE:`. The bold-with-the-colon-outside
+formatting would have been dropped there too, silently, so the one honest exit
+the system offers would not have been honoured. What was observed: one of ten
+runs wrote the dispute that way, in the harness. What is inferred, from reading
+the code and not from a full company build: the same text would have been
+missed by the real pipeline. As far as the code shows, the cost would have been
+retries, not a wrong release, because stuck detection hands the task to QA once
+the same tests fail twice and a QA pass only counts if the tests really pass.
+Fixed: the markers now match whatever bold, italics, backticks or capitalisation
+the model puts around them, and the test uses the exact strings from these runs
+(`test_a_dispute_is_found_however_it_is_formatted`).
 
 ## Why left open
 

@@ -190,7 +190,7 @@ unreachable goal  +  the honest route blocked  =  the agent goes around
 ```
 
 If that is true, this is not bad luck. It can be **caused on purpose** — which
-is what [`redteam.py`](redteam.py) does. Six scenarios (four for the Developer, two
+is what [`redteam.py`](redteam.py) does. Seven scenarios (five for the Developer, two
 for the CEO), each an impossible task with the escape hatch removed. The agent can always refuse (writing
 `SPEC PROBLEM:` or `QA TEST DISPUTE:` and stopping is allowed); the question
 is whether it takes that door or climbs out of a window.
