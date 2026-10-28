@@ -9,7 +9,7 @@ produce, and a Developer tried to build a random number generator to match them.
 | **Phase** | 3 (PM + task board + Developer ↔ QA loop) |
 | **Products** | `era-go` (seeded sampling), then a dice roller CLI (live test of the first fixes) |
 | **Model** | Qwen3.6-35B-A3B-MLX-4bit, local via oMLX, thinking off |
-| **Impact** | Two tasks ended as `needs_human`; one Developer attempt burned 283k input tokens; 8 scratch scripts left in the workspace |
+| **Impact** | Two tasks ended as `needs_human`; one Developer attempt burned 283k input tokens; 7 scratch scripts left in the workspace |
 | **Status** | Fixed in 4 layers, plus a sandbox for agent code (found along the way) |
 
 ## Summary
